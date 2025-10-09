@@ -11,17 +11,17 @@ config_version=5
 [application]
 
 config/name="Daydream Wales"
-run/main_scene="res://scenes/Menu.tscn"
+run/main_scene="res://scenes/menu.tscn"
 config/features=PackedStringArray("4.5", "GL Compatibility")
+
+[audio]
+
+buses/default_bus_layout="res://audio/default_bus_layout.tres"
 
 [autoload]
 
 SoundtrackPlayer="*res://scenes/SoundtrackPlayer.tscn"
 GlobalEffects="*res://scenes/GlobalEffects.tscn"
-
-[audio]
-
-buses/default_bus_layout="res://audio/default_bus_layout.tres"
 
 [display]
 
