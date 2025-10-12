@@ -1,5 +1,10 @@
 extends CharacterBody2D
 
+var is_speed_boosted: bool = false
+var speed_boost_timer: Timer
+var normal_max_speed: float
+var normal_acceleration: float
+
 @export_group("Core Movement")
 @export var max_speed: float = 20000.0
 @export var acceleration: float = 2000.0
@@ -58,6 +63,20 @@ func _ready():
 	if game_manager:
 		game_manager.player_died.connect(_on_player_died)
 		game_manager.level_reset.connect(_on_level_reset)
+	
+	normal_max_speed = max_speed
+	normal_acceleration = acceleration
+	
+	get_node("are")
+	
+	speed_boost_timer = Timer.new()
+	speed_boost_timer.one_shot = true
+	add_child(speed_boost_timer)
+	speed_boost_timer.connect("timeout", Callable(self, "_on_speed_boost_end"))
+	
+	var powerup = get_node("./Area2D")  # path to the Area2D node
+	if powerup:
+		powerup.connect("powerup_collected", Callable(self, "_on_powerup_collected"))
 
 func _on_player_died(player_num: int):
 	if name == "Player" and player_num == 1:
@@ -209,3 +228,25 @@ func _physics_process(delta):
 	sprite.scale = sprite.scale.lerp(target_scale, squash_stretch_smoothing)
 
 	previous_velocity = current_velocity
+
+func apply_speed_boost(multiplier: float, duration: float):
+	if is_speed_boosted:
+		return  # already active, don’t stack
+
+	print("Speed boost applied for", duration, "seconds!")
+
+	is_speed_boosted = true
+	max_speed = normal_max_speed * multiplier
+	acceleration = normal_acceleration * multiplier
+
+	speed_boost_timer.start(duration)  # actually trigger the timer
+
+func _on_speed_boost_end():
+	max_speed = normal_max_speed
+	acceleration = normal_acceleration
+	is_speed_boosted = false
+	print("Speed boost ended.")
+
+func _on_powerup_collected(player):
+	apply_speed_boost(5, 5)
+	

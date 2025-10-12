@@ -1,10 +1,12 @@
-[gd_scene load_steps=8 format=4 uid="uid://b1ocdrh0q4pff"]
+[gd_scene load_steps=11 format=4 uid="uid://b1ocdrh0q4pff"]
 
 [ext_resource type="PackedScene" uid="uid://b4j8y0x1k2m3n" path="res://scenes/Player.tscn" id="1_5u0me"]
 [ext_resource type="Script" uid="uid://cibyo4pseh1eb" path="res://scripts/Player2.gd" id="2_6c1f5"]
 [ext_resource type="TileSet" uid="uid://caq3sykwes14g" path="res://assets/BrickWallTileSet.tres" id="3_o1aly"]
 [ext_resource type="Script" uid="uid://dwhvhvavofqgh" path="res://scripts/GameManager.gd" id="4_game"]
 [ext_resource type="Texture2D" uid="uid://tm7emq0vd78u" path="res://assets/dirt.png" id="4_miqmb"]
+[ext_resource type="Texture2D" uid="uid://c5v6vyy2qmptr" path="res://assets/bolt.png" id="6_miqmb"]
+[ext_resource type="Script" uid="uid://bv24pgu42k4sa" path="res://scripts/PowerLightning.gd" id="6_n4llp"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_n4llp"]
 texture = ExtResource("4_miqmb")
@@ -15,6 +17,9 @@ texture = ExtResource("4_miqmb")
 
 [sub_resource type="TileSet" id="TileSet_pnqop"]
 sources/0 = SubResource("TileSetAtlasSource_n4llp")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_miqmb"]
+size = Vector2(15.999992, 15.999977)
 
 [node name="BrickLevel" type="Node2D"]
 
@@ -49,3 +54,21 @@ move_up_action = "p2_move_up"
 move_down_action = "p2_move_down"
 move_left_action = "p2_move_left"
 move_right_action = "p2_move_right"
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(296, 264)
+rotation = 3.1415925
+scale = Vector2(0.5, 0.5)
+collision_mask = 6
+script = ExtResource("6_n4llp")
+
+[node name="speedPowerUp" type="Sprite2D" parent="Area2D"]
+texture = ExtResource("6_miqmb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, 6.1035156e-05)
+rotation = -3.1415925
+scale = Vector2(2, 2)
+shape = SubResource("RectangleShape2D_miqmb")
+
+[connection signal="body_entered" from="Area2D" to="Area2D" method="_on_body_entered"]

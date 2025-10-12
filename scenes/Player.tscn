@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://8ijvj5c2mp35" path="res://scripts/Player.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://deo0sfakf2pfm" path="res://assets/guy/happy.png" id="2"]
-[ext_resource type="PackedScene" uid="uid://bg5wcw3kxl7qm" path="res://MaceSystem.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://bg5wcw3kxl7qm" path="res://scenes/MaceSystem.tscn" id="3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(32, 32)

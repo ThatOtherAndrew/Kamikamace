@@ -94,6 +94,10 @@ func create_explosion(pos: Vector2):
 	await explosion.finished
 	explosion.queue_free()
 
+func _on_powerup_collected(player):
+	print("HEYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
+	player.apply_speed_boost(1.5, 5.0)
+
 func reset_level():
 	emit_signal("level_reset")
 	is_resetting = false
