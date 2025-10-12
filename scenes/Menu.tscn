@@ -1,13 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://caqn21j4sbamt"]
+[gd_scene load_steps=8 format=3 uid="uid://caqn21j4sbamt"]
 
 [ext_resource type="Script" uid="uid://rjup66xdj1xh" path="res://scripts/menu.gd" id="1_11y2r"]
 [ext_resource type="Texture2D" uid="uid://5ny2bas0l28m" path="res://assets/meny.png" id="1_xdvgc"]
+[ext_resource type="Texture2D" uid="uid://c1mysql2b1ryw" path="res://assets/Epilepsy_off.png" id="2_g3eks"]
 [ext_resource type="Texture2D" uid="uid://bevyfr8sxx2af" path="res://assets/go.png" id="3_o0tnf"]
 [ext_resource type="Script" uid="uid://b2osi6r48gpxo" path="res://scripts/goBtn.gd" id="4_jmdev"]
 [ext_resource type="PackedScene" uid="uid://b4j8y0x1k2m3n" path="res://scenes/Player.tscn" id="4_o0tnf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jmdev"]
-size = Vector2(140, 91.5)
+size = Vector2(174, 104.5)
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -18,10 +19,17 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_11y2r")
 
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+texture = ExtResource("2_g3eks")
+
 [node name="Node2D" type="Node2D" parent="."]
 position = Vector2(0, 386)
 
 [node name="Area2D" type="Area2D" parent="Node2D"]
+position = Vector2(0, -60)
 collision_mask = 2
 script = ExtResource("4_jmdev")
 
@@ -30,6 +38,7 @@ position = Vector2(576, -5.25)
 shape = SubResource("RectangleShape2D_jmdev")
 
 [node name="TextureRect" type="TextureRect" parent="Node2D/Area2D"]
+visible = false
 offset_left = 507.0
 offset_top = -49.0
 offset_right = 646.0
@@ -37,6 +46,7 @@ offset_bottom = 38.0
 texture = ExtResource("3_o0tnf")
 
 [node name="MainMenu" type="MarginContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -55,13 +65,45 @@ layout_mode = 2
 layout_mode = 2
 texture = ExtResource("1_xdvgc")
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
-layout_mode = 0
-offset_top = 386.0
-offset_right = 1152.0
-offset_bottom = 549.0
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(845, 364, 916, 382, 920, 409, 896, 583, 884, 645, 778, 649)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(891, 229, 1024, 201, 1152, 630, 1152, 650, 982, 652, 880, 235)
+
+[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(1016, 3, 1155, 136, 1157, -1, 1009, -5)
+
+[node name="CollisionPolygon2D4" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(3, 73, 202, -16, -54, -16, -17, 80)
+
+[node name="CollisionPolygon2D5" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(133, 643, 193, 165, 67, 130, -10, 432, -33, 688)
+
+[node name="CollisionPolygon2D6" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(390, 414, 507, 645, 402, 651, 318, 440)
+
+[node name="CollisionPolygon2D7" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(253, 297, 386, 650, 254, 648, 150, 356, 250, 290)
+
+[node name="CollisionPolygon2D8" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(1155, 2, -56, -1, 133, -54, 1192, -58)
+
+[node name="CollisionPolygon2D9" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(1152, 649, 1155, -16, 1202, 400, 1206, 643)
+
+[node name="CollisionPolygon2D10" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(2, 649, 1162, 648, 1126, 681, 33, 685)
+
+[node name="CollisionPolygon2D11" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(4, 650, -1, -21, -43, 456, -34, 678)
 
 [node name="Player" parent="." instance=ExtResource("4_o0tnf")]
 modulate = Color(0.5, 0.5, 1, 1)
-position = Vector2(253, 387)
+z_index = 1
+position = Vector2(354, 319)
+scale = Vector2(2, 2)
 collision_layer = 2
+sprite_scale = 0.1
