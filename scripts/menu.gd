@@ -35,13 +35,13 @@ func _on_button_pressed() -> void:
 	tween.set_ease(Tween.EASE_OUT)
 	tween.set_parallel(true)  # Make tweens run in parallel
 
-	# Tween the lowpass filter cutoff frequency to max
+	# Tween the lowpass filter cutoff frequency to max (longer duration)
 	if lowpass_filter:
-		tween.tween_property(lowpass_filter, "cutoff_hz", 20500.0, 0.4)
+		tween.tween_property(lowpass_filter, "cutoff_hz", 20500.0, 2.0)
 
-	# Fade to black at the same time
+	# Fade to black at the same time (longer duration)
 	if fade_overlay:
-		tween.tween_property(fade_overlay, "color:a", 1.0, 0.4)
+		tween.tween_property(fade_overlay, "color:a", 1.0, 2.0)
 
 	# Wait for tweens to complete
 	await tween.finished
@@ -50,7 +50,7 @@ func _on_button_pressed() -> void:
 	if GlobalEffects:
 		GlobalEffects.play_respawn_transition()
 
-	# Small delay to let the respawn effect start
-	await get_tree().create_timer(0.1).timeout
+	# Longer delay to let the respawn effect play out more
+	await get_tree().create_timer(0.3).timeout
 
 	get_tree().change_scene_to_file("res://scenes/BrickLevel.tscn")
