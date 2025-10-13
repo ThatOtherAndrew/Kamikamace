@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://dkp8m3vhx4y2n"]
+[gd_scene load_steps=2 format=3 uid="uid://d23o0vrcieu0"]
 
-[ext_resource type="Script" uid="uid://brx5qth3y8m4k" path="res://scripts/RespawnTransition.gd" id="1"]
-[ext_resource type="Shader" uid="uid://c7n8xm4p3kv2j" path="res://shaders/vhs_rewind.gdshader" id="2"]
+[ext_resource type="Script" uid="uid://ccnerdb685byk" path="res://scripts/RespawnTransition.gd" id="1"]
 
 [node name="RespawnTransition" type="ColorRect"]
 anchors_preset = 15
