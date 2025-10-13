@@ -2,8 +2,12 @@ extends Node
 
 var player1_deaths = 0
 var player2_deaths = 0
-var death_label: Label
+var player1_skulls: Array = []
+var player2_skulls: Array = []
 var is_resetting = false
+var game_over = false
+var skull_texture = preload("res://assets/skull.png")
+var screen_tint: ColorRect
 
 signal player_died(player_num: int)
 signal level_reset()
@@ -14,26 +18,63 @@ func _ready():
 
 func create_death_ui():
     var canvas_layer = CanvasLayer.new()
+    canvas_layer.layer = 100  # High layer to be on top of game
     add_child(canvas_layer)
 
-    death_label = Label.new()
-    death_label.add_theme_font_size_override("font_size", 24)
-    death_label.position = Vector2(20, 20)
-    death_label.text = "Player 1 Deaths: 0 | Player 2 Deaths: 0"
-    canvas_layer.add_child(death_label)
+    # Create 5 skulls for Player 1 (top left)
+    for i in range(5):
+        var skull = Sprite2D.new()
+        skull.texture = skull_texture
+        skull.position = Vector2(40 + (i * 36), 40)  # More padding and spacing
+        skull.modulate = Color(0, 0, 0, 1)  # Start black
+        skull.scale = Vector2(2, 2)  # Make them visible
+        canvas_layer.add_child(skull)
+        player1_skulls.append(skull)
+
+    # Create 5 skulls for Player 2 (top right)
+    var screen_width = 1152  # Based on your project resolution
+    for i in range(5):
+        var skull = Sprite2D.new()
+        skull.texture = skull_texture
+        skull.position = Vector2(screen_width - 40 - ((4 - i) * 36), 40)  # More padding and spacing
+        skull.modulate = Color(0, 0, 0, 1)  # Start black
+        skull.scale = Vector2(2, 2)
+        canvas_layer.add_child(skull)
+        player2_skulls.append(skull)
+
+    # Create screen tint overlay (hidden initially)
+    screen_tint = ColorRect.new()
+    screen_tint.set_anchors_preset(Control.PRESET_FULL_RECT)
+    screen_tint.color = Color(0, 0, 0, 0)  # Start transparent
+    screen_tint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    canvas_layer.add_child(screen_tint)
 
 func handle_player_death(player_num: int, death_position: Vector2):
-    if is_resetting:
+    if is_resetting or game_over:
         return
 
-    # Update death count
+    # Update death count and skull colors
+    var winner = 0
     if player_num == 1:
+        if player1_deaths < 5:
+            player1_skulls[player1_deaths].modulate = Color(0.5, 0.5, 1, 1)  # Blue
         player1_deaths += 1
+        if player1_deaths >= 5:
+            winner = 1
     else:
+        if player2_deaths < 5:
+            player2_skulls[player2_deaths].modulate = Color(1, 0.5, 0.5, 1)  # Red
         player2_deaths += 1
+        if player2_deaths >= 5:
+            winner = 2
 
-    # Update UI
-    death_label.text = "Player 1 Deaths: %d | Player 2 Deaths: %d" % [player1_deaths, player2_deaths]
+    # If there's a winner, apply screen tint immediately
+    if winner > 0:
+        game_over = true
+        if winner == 1:
+            screen_tint.color = Color(0.5, 0.5, 1, 0.3)  # Blue with transparency
+        else:
+            screen_tint.color = Color(1, 0.5, 0.5, 0.3)  # Red with transparency
 
     # Create explosion at death position
     create_explosion(death_position)
@@ -53,6 +94,10 @@ func handle_player_death(player_num: int, death_position: Vector2):
 
     await get_tree().create_timer(0.25).timeout
     reset_level()
+
+    # If there was a winner, reset the game after normal death cycle
+    if winner > 0:
+        reset_game()
 
 func create_explosion(pos: Vector2):
     var explosion = GPUParticles2D.new()
@@ -97,6 +142,26 @@ func create_explosion(pos: Vector2):
 func _on_powerup_collected(player):
     print("HEYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
     player.apply_speed_boost(1.5, 5.0)
+
+func reset_game():
+    # Reset death counts
+    player1_deaths = 0
+    player2_deaths = 0
+
+    # Reset all skull colors back to black
+    for skull in player1_skulls:
+        skull.modulate = Color(0, 0, 0, 1)
+    for skull in player2_skulls:
+        skull.modulate = Color(0, 0, 0, 1)
+
+    # Clear screen tint
+    screen_tint.color = Color(0, 0, 0, 0)
+
+    # Resume gameplay
+    game_over = false
+
+    # Reset level to respawn players
+    emit_signal("level_reset")
 
 func reset_level():
     emit_signal("level_reset")
