@@ -44,6 +44,9 @@ var previous_velocity: Vector2 = Vector2.ZERO
 var acceleration_spike_timer: float = 0.0
 var spawn_position: Vector2
 var is_dead = false
+var is_invincible = false
+var invincibility_timer: float = 0.0
+var glow_intensity: float = 0.0
 
 func _ready():
     _register_input_actions()
@@ -75,6 +78,11 @@ func _on_level_reset():
     global_position = spawn_position
     current_velocity = Vector2.ZERO
     momentum = Vector2.ZERO
+
+    # Start invincibility
+    is_invincible = true
+    invincibility_timer = 2.0
+
     # Show mace again and reset it
     if has_node("MaceSystem"):
         $MaceSystem.visible = true
@@ -84,6 +92,7 @@ func _on_level_reset():
             $MaceSystem/Mace.can_damage = false
             await get_tree().create_timer(1.0).timeout
             $MaceSystem/Mace.can_damage = true
+            is_invincible = false
 
 func _register_input_actions():
     if not InputMap.has_action(move_up_action):
@@ -202,5 +211,19 @@ func _physics_process(delta):
     var squash = 1.0 - (speed_ratio * squash_stretch_intensity * 0.5 * intensity_multiplier)
     var target_scale = Vector2(squash * sprite_scale, stretch * sprite_scale)
     sprite.scale = sprite.scale.lerp(target_scale, squash_stretch_smoothing)
+
+    # Handle invincibility glow effect
+    if is_invincible:
+        invincibility_timer -= delta
+        # Pulsing glow effect (fast pulse during invincibility)
+        glow_intensity = (sin(Time.get_ticks_msec() * 0.015) + 1.0) * 0.5  # Oscillates between 0 and 1
+        var glow_color = Color(1.0 + glow_intensity, 1.0 + glow_intensity, 1.0 + glow_intensity, 1.0)
+        sprite.self_modulate = glow_color
+
+        if invincibility_timer <= 0.0:
+            is_invincible = false
+    else:
+        # Reset to normal color
+        sprite.self_modulate = Color(1.0, 1.0, 1.0, 1.0)
 
     previous_velocity = current_velocity
