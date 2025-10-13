@@ -13,6 +13,8 @@ config_version=5
 config/name="Kamikamace"
 run/main_scene="uid://caqn21j4sbamt"
 config/features=PackedStringArray("4.5", "GL Compatibility")
+boot_splash/bg_color=Color(0.09411765, 0.043137256, 0.003921569, 1)
+boot_splash/image="uid://dakfbm707cle7"
 
 [audio]
 
