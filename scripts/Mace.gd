@@ -7,8 +7,15 @@ var player_ref = null
 var owner_player_num = 1  # Which player owns this mace
 var spawn_protection_time = 1.0  # 1 second of spawn protection
 var can_damage = false
+var impact_sound = preload("res://audio/kick.ogg")
+var audio_player: AudioStreamPlayer
 
 func _ready():
+    # Create audio player for impact sound
+    audio_player = AudioStreamPlayer.new()
+    audio_player.stream = impact_sound
+    add_child(audio_player)
+
     # Enable collision detection
     set_contact_monitor(true)
     set_max_contacts_reported(10)
@@ -31,6 +38,20 @@ func set_owner_player(player_num: int):
         print("Player 2's mace set to detect layers: ", collision_mask)
 
 func _on_body_entered(body):
+    # Calculate impact force from velocity
+    var impact_force = linear_velocity.length()
+
+    # Scale volume based on impact force (more generous scaling)
+    # Map velocity range 0-500 to volume range -20db to 0db for better audibility
+    var normalized_force = clamp(impact_force / 500.0, 0.0, 1.0)
+    var volume_db = -20.0 + (normalized_force * 20.0)  # Range from -20db to 0db
+    audio_player.volume_db = volume_db
+
+    # Play impact sound on any collision (lower threshold)
+    if impact_force > 10.0:  # Much lower threshold
+        audio_player.play()
+        print("Impact sound played! Force: ", impact_force, " Volume: ", volume_db, "dB")
+
     if not can_damage:
         print("Mace collision ignored - spawn protection active")
         return

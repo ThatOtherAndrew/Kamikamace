@@ -121,3 +121,7 @@ move_down_action = "p2_move_down"
 move_left_action = "p2_move_left"
 move_right_action = "p2_move_right"
 sprite_scale = 0.1
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 324)
+zoom = Vector2(1, 1)

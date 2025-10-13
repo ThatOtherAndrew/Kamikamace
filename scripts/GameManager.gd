@@ -8,11 +8,18 @@ var is_resetting = false
 var game_over = false
 var skull_texture = preload("res://assets/skull.png")
 var screen_tint: ColorRect
+var death_sound = preload("res://audio/reverse-cymbal.ogg")
+var audio_player: AudioStreamPlayer
 
 signal player_died(player_num: int)
 signal level_reset()
 
 func _ready():
+    # Create audio player for death sound
+    audio_player = AudioStreamPlayer.new()
+    audio_player.stream = death_sound
+    add_child(audio_player)
+
     # Create UI overlay for death counter
     create_death_ui()
 
@@ -75,6 +82,9 @@ func handle_player_death(player_num: int, death_position: Vector2):
             screen_tint.color = Color(0.5, 0.5, 1, 0.3)  # Blue with transparency
         else:
             screen_tint.color = Color(1, 0.5, 0.5, 0.3)  # Red with transparency
+
+    # Play death sound
+    audio_player.play()
 
     # Create explosion at death position
     create_explosion(death_position)

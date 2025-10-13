@@ -3,12 +3,16 @@ extends Node
 var tween: Tween
 var lowpass_filter: AudioEffectLowPassFilter
 var fade_overlay: ColorRect
+var camera: Camera2D
 
 func _ready():
 	# Get the lowpass filter from the Soundtrack bus
 	var bus_idx = AudioServer.get_bus_index("Soundtrack")
 	if bus_idx != -1:
 		lowpass_filter = AudioServer.get_bus_effect(bus_idx, 1) as AudioEffectLowPassFilter
+
+	# Get camera reference
+	camera = get_node("../Camera2D")
 
 	# Create fade overlay
 	create_fade_overlay()
@@ -32,7 +36,7 @@ func _on_button_pressed() -> void:
 
 	tween = create_tween()
 	tween.set_trans(Tween.TRANS_QUAD)
-	tween.set_ease(Tween.EASE_OUT)
+	tween.set_ease(Tween.EASE_IN)
 	tween.set_parallel(true)  # Make tweens run in parallel
 
 	# Tween the lowpass filter cutoff frequency to max (longer duration)
@@ -42,6 +46,10 @@ func _on_button_pressed() -> void:
 	# Fade to black at the same time (longer duration)
 	if fade_overlay:
 		tween.tween_property(fade_overlay, "color:a", 1.0, 2.0)
+
+	# Zoom in camera at the same time
+	if camera:
+		tween.tween_property(camera, "zoom", Vector2(3, 3), 2.0)
 
 	# Wait for tweens to complete
 	await tween.finished
